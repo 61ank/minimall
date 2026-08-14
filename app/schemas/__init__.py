@@ -2,6 +2,7 @@
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
 from app.schemas.cart import AddCartRequest, CartItemOut, UpdateCartRequest
 from app.schemas.common import Page
+from app.schemas.favorite import FavoriteCreateRequest, FavoriteOut
 from app.schemas.order import (
     CreateOrderRequest,
     OrderItemOut,
@@ -29,6 +30,8 @@ __all__ = [
     "CartItemOut",
     "CategoryOut",
     "CreateOrderRequest",
+    "FavoriteCreateRequest",
+    "FavoriteOut",
     "LoginRequest",
     "OrderItemOut",
     "OrderListItem",
