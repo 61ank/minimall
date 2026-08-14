@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     app_env: str = "dev"
     debug: bool = True
     log_level: str = "INFO"
+    db_url: str = ""  # 来自 .env 的 DB_URL；空表示未配置数据库
 
 
 settings = Settings()

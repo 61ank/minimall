@@ -12,7 +12,8 @@
 | 语言/框架 | Python 3.14 + FastAPI | 用户选择学习 Python |
 | 服务器 | uvicorn（ASGI 服务器） | FastAPI 不内置服务器，需 uvicorn 监听分发 |
 | 依赖管理 | requirements.txt | 用户选择，简单直观 |
-| 数据库/中间件 | MySQL（业务库）、Redis（缓存/防超卖）、Elasticsearch（搜索，后期） | 需求见 docs/requirements.md §8 |
+| 数据库/中间件 | MySQL + SQLAlchemy 2.0（同步）+ PyMySQL + Alembic（迁移） | 表设计见 docs/database.md |
+| 缓存/搜索 | Redis（缓存，后续接入）、Elasticsearch（搜索，后期） | 需求见 docs/requirements.md |
 | 远程仓库 | https://github.com/61ank/minimall（origin/main） | 已推送 |
 
 ## 目录结构
@@ -20,13 +21,15 @@
 ```
 app/
   main.py        # 应用入口，create_app() 工厂
-  core/          # config(配置)、logging(日志)、exceptions(统一异常)
+  core/          # config(配置)、database(会话)、logging(日志)、exceptions(统一异常)
   routers/       # API 路由（当前仅 health）
   services/      # 业务逻辑层（待填充）
-  models/        # ORM 模型层（待填充）
+  models/        # ORM 模型层（用户/商品/购物车/订单等，已建）
   schemas/       # Pydantic 请求/响应模型（待填充）
+  seed.py        # 开发种子数据
+alembic/         # 数据库迁移（env.py 从 .env 读连接串）
 tests/           # 测试（待填充）
-docs/            # 需求规格、训练日志
+docs/            # 需求规格、架构、数据库设计、训练日志
 .claude/memory/  # 项目记忆（新会话先读 MEMORY.md）
 ```
 
@@ -45,6 +48,11 @@ python -m pip install -r requirements.txt
 # 启动服务（开发，改动自动重启）
 python -m uvicorn app.main:app --reload
 # 访问 http://127.0.0.1:8000/health ，接口文档 http://127.0.0.1:8000/docs
+
+# 数据库迁移（Alembic）
+python -m alembic revision --autogenerate -m "描述"   # 生成迁移
+python -m alembic upgrade head                        # 应用迁移
+python -m app.seed                                    # 插入开发种子数据
 
 # 运行测试（阶段 9 完善）
 python -m pytest
