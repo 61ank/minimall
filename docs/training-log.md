@@ -170,3 +170,27 @@
 - **先文档后落地**：先写 database.md（表/索引/状态机/种子）再写模型，二者逐项对表，避免边写边改
 - **索引从"热点查询"反推**：索引不是随便建，而是从需求的高频查询推导（商品筛选、订单查询、防超卖条件更新）
 - **迁移必须真实跑通**：SHOW TABLES 确认建表、information_schema 确认外键、Python 查询确认数据，不假设成功
+
+---
+
+## 轮次 12 · 阶段七：编码（鉴权 + 用户 + 商品）
+
+**日期：** 2026-08-14
+
+**做了什么：**
+- 决策确认：bcrypt 直接使用、token 30 分钟、排序 `sort=-price` 格式
+- 落地第一个纵向切片：schemas（auth/user/product/common）→ services（auth/users/products）→ routers（/auth /users /categories /products）→ `security`（bcrypt 哈希 + JWT + get_current_user）
+- 商品列表：分页（{items,total,page,page_size}）、筛选（分类/关键词/价格区间）、排序白名单（sales/price/created_at，`-` 表降序，price 用 SKU 最低价子查询）
+- curl 全链路验证通过：注册→登录→带 token 访问受保护接口→地址增查；商品列表/筛选/排序/详情/404/400；/health 无回归
+- **补充（代码 Review 发现并修复）**：日志此前"只配置未使用"——兜底异常处理器注释写"细节依赖日志"却从不打日志，未捕获异常被吞掉；已补 `logger.exception`（含堆栈）+ 应用启动日志，验证日志真正生效
+
+**Debug：POST 中文 body 报 400（现象 → 定位 → 修复）**
+- **现象**：`curl -d '{"nickname":"测试用户"}'` 报 `400 There was an error parsing the body`。
+- **定位**：Git Bash 调用原生 Windows 程序（curl.exe）时把命令行参数转成 ANSI 代码页（GBK），中文被转成 GBK 字节、破坏 UTF-8 JSON。
+- **修复**：JSON 写入 UTF-8 文件后 `curl --data-binary @file`（走文件字节，不经命令行参数编码转换）；验证通过。
+- **关联**：与 mysql 乱码同根（Windows GBK 代码页），属一类环境坑。
+
+**对应意义（学到的能力）：**
+- **纵向切片样板**：一个模块 = schemas → service → router → 依赖注入 的完整闭环，先立样板、后续模块照此铺开
+- **验证要"全链路真实跑通"**：不只测 happy path，还测失败路径（无 token 401、商品 404、非法排序 400）
+- **错误码一致性**：全部走 AppError 统一 {code,message}，客户端可程序化判断

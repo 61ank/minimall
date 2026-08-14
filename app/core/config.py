@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     debug: bool = True
     log_level: str = "INFO"
     db_url: str = ""  # 来自 .env 的 DB_URL；空表示未配置数据库
+    secret_key: str = ""  # 来自 .env 的 SECRET_KEY；空则 JWT 相关功能不可用
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
 
 
 settings = Settings()

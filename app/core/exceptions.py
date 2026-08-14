@@ -3,8 +3,12 @@
 约定错误响应格式：
     {"code": "业务错误码", "message": "人类可读消息"}
 """
+import logging
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+
+logger = logging.getLogger(__name__)
 
 
 class AppError(Exception):
@@ -27,7 +31,8 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(Exception)
     async def unhandled_error_handler(request: Request, exc: Exception) -> JSONResponse:
-        # 未预期异常：不向客户端泄露细节，细节依赖日志记录
+        # 未预期异常：不向客户端泄露细节，但必须完整记入日志（含堆栈）便于排查
+        logger.exception("未捕获异常: %s %s", request.method, request.url.path)
         return JSONResponse(
             status_code=500,
             content={"code": "INTERNAL_ERROR", "message": "服务器内部错误"},
