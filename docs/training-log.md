@@ -74,3 +74,50 @@
 - **范围界定**：用 MVP vs 后期 v2 划分控制复杂度，保持"中等、可运行"，避免需求无限膨胀
 - **需求先于实现**：写"功能点 / 验收点 / 状态机"，不写实现方案；把鉴权、库存策略、依赖管理等开放问题留给架构阶段，避免过早锁定技术选择
 - **验收标准可验证化**：每条验收都可执行验证（如并发 100 抢购库存不为负），为后续测试与 CI 定标
+
+---
+
+## 轮次 6 · 阶段三：项目初始化与 Git
+
+**日期：** 2026-08-14
+
+**做了什么：**
+- git init（main 分支）+ .gitignore + 首次提交 `9a7b1ab`（19 文件，工作区干净）
+- 创建 venv（Python 3.14.7）+ 安装 fastapi 0.141.1 / uvicorn 0.52.3 / pydantic-settings 2.15.0，生成 `requirements.txt`（用户决策：requirements.txt 而非 pyproject.toml）
+- 搭建骨架：`app/{core,routers,services,models,schemas}` + `tests/`；pydantic-settings 配置、日志、统一异常处理、`create_app()` 应用工厂
+- 启动服务验证 `/health` 返回 HTTP 200
+
+**对应意义（学到的能力）：**
+- **Git 基础闭环**：init → status → add → diff --cached --stat → commit → log，先审查暂存内容再提交
+- **工程骨架模式**：分层目录 + 应用工厂（可测试）+ 配置外置（.env）+ 统一异常 JSON 约定，先搭骨架再写业务
+- **"最小可运行"验证**：不写业务代码就先把 `/health` 跑通，确认环境/骨架可执行再进入下一阶段
+
+---
+
+## 轮次 7 · GitHub 远程仓库推送
+
+**日期：** 2026-08-14
+
+**做了什么：**
+- 澄清"本地 commit ≠ GitHub"：项目此前仅在本机，未配置远程仓库
+- 用户创建 GitHub 空仓库 `61ank/minimall`，执行 `git remote add origin` + `git push -u origin main` 推送成功
+
+**对应意义（学到的能力）：**
+- **本地 / 远程两层模型**：commit 在本地，push 才到远程；`git remote -v` 查看是否绑定、`git branch -vv` 查看跟踪关系
+- **推送前置条件**：GitHub 建空仓库（不勾选 README，避免推送前需先合并）→ add origin → push -u
+- **对外操作确认**：推送到 GitHub 属外向操作，操作前先征得用户明确同意
+
+---
+
+## 轮次 8 · 阶段四：CLAUDE.md 项目上下文
+
+**日期：** 2026-08-14
+
+**做了什么：**
+- 创建项目根 [CLAUDE.md](CLAUDE.md)：项目概述、目录结构、常用命令、开发规范（分层/异常/配置/命名/Git）、运行模型、注意事项、记忆指针
+- 明确边界：只放"每次会话需要且反复用到"的高频稳定信息；需求细节留在 docs/requirements.md
+
+**对应意义（学到的能力）：**
+- **CLAUDE.md 是什么**：每次会话自动加载的项目级上下文文件，是 Claude Code 理解项目的第一入口
+- **该进/不该进的边界**：进 = 高频、稳定、行动导向（命令/结构/约定/决策及原因）；不进 = 会变化的状态、已有归宿的细节（需求→docs/requirements.md）、大段代码（引用即可）
+- **为什么**：CLAUDE.md 每次会话都载入、有 token 成本，应做"地图"而非"整本书"
