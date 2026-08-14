@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import setup_logging
-from app.routers import auth, categories, health, products, users
+from app.routers import auth, cart, categories, health, products, users
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +32,7 @@ def create_app() -> FastAPI:
     application.include_router(users.router)
     application.include_router(categories.router)
     application.include_router(products.router)
+    application.include_router(cart.router)
 
     return application
 

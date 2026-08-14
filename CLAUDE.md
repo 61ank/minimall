@@ -22,8 +22,8 @@
 app/
   main.py        # 应用入口，create_app() 工厂
   core/          # config、database、logging、exceptions、security(密码哈希/JWT)
-  routers/       # API 路由（health/auth/users/categories/products）
-  services/      # 业务逻辑层（auth/users/products）
+  routers/       # API 路由（health/auth/users/categories/products/cart）
+  services/      # 业务逻辑层（auth/users/products/cart）
   models/        # ORM 模型层（用户/商品/购物车/订单等）
   schemas/       # Pydantic 请求/响应模型（auth/user/product/common）
   seed.py        # 开发种子数据

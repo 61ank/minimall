@@ -1,5 +1,6 @@
 """Pydantic 请求/响应模型层。"""
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
+from app.schemas.cart import AddCartRequest, CartItemOut, UpdateCartRequest
 from app.schemas.common import Page
 from app.schemas.product import (
     CategoryOut,
@@ -15,8 +16,10 @@ from app.schemas.user import (
 )
 
 __all__ = [
+    "AddCartRequest",
     "AddressCreateRequest",
     "AddressOut",
+    "CartItemOut",
     "CategoryOut",
     "LoginRequest",
     "Page",
@@ -25,6 +28,7 @@ __all__ = [
     "RegisterRequest",
     "SkuOut",
     "TokenResponse",
+    "UpdateCartRequest",
     "UserOut",
     "UserUpdateRequest",
 ]
