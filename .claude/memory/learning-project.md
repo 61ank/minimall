@@ -27,3 +27,5 @@ metadata:
 **Git 远程（2026-08-14）：** GitHub 仓库 `https://github.com/61ank/minimall`（用户名 61ank），origin 已绑定并推送 main。gh CLI 未安装。
 
 **项目上下文（2026-08-14）：** 项目根 `CLAUDE.md` 已创建，承载会话级项目上下文（结构/命令/规范/决策）；需求在 `docs/requirements.md`；训练日志在 `docs/training-log.md`；本记忆目录为 `.claude/memory/`。
+
+**项目状态（2026-08-14）：** 手把手开发暂停于阶段九（核心交易闭环已完成可运行：鉴权/用户/商品/购物车/订单/库存/支付，18 个 API）。待学能力清单与详细教学已写入 `docs/training-log.md` 轮次 15，供后续自学/续学。
