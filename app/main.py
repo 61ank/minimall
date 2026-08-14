@@ -1,0 +1,30 @@
+"""MiniMall 精简电商平台 — 应用入口。
+
+启动方式（在项目根目录）：
+    uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+"""
+from fastapi import FastAPI
+
+from app.core.config import settings
+from app.core.exceptions import register_exception_handlers
+from app.core.logging import setup_logging
+from app.routers import health
+
+
+def create_app() -> FastAPI:
+    """应用工厂：便于测试时创建隔离实例。"""
+    setup_logging(settings.log_level)
+
+    application = FastAPI(
+        title=settings.app_name,
+        version="0.1.0",
+        description="精简电商平台后端 API",
+    )
+
+    register_exception_handlers(application)
+    application.include_router(health.router)
+
+    return application
+
+
+app = create_app()
